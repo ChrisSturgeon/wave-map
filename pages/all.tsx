@@ -1,18 +1,13 @@
-import { GetServerSideProps } from 'next';
 import { prisma } from '@/server/db/client';
+import { DefaultUser } from 'next-auth';
+import DeleteLocation from '@/components/DeleteLocation/DeleteLocation';
 
 interface LocationType {
   id: Number;
   name: String;
   createdAt: Date;
   updatedAt: Date;
-  user: {
-    email: string;
-    emailVerified: boolean;
-    id: string;
-    image: string;
-    name: string;
-  };
+  user: DefaultUser;
 }
 
 interface Props {
@@ -28,6 +23,7 @@ export default function AllLocations({ locations }: Props) {
           return (
             <li key={location.name as React.Key}>
               {location.name} posted by {location.user.name}
+              <DeleteLocation location={location.id} />
             </li>
           );
         })}
