@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import styles from './NavBar.module.css';
+import Login from '../Login.tsx/Login';
 
 export default function NavBar() {
   return (
@@ -14,6 +15,7 @@ export default function NavBar() {
             <Link href="/all">All Locations</Link>
           </li>
         </ul>
+        <Login />
       </nav>
     </>
   );
