@@ -15,6 +15,7 @@ interface Props {
 }
 
 export default function AllLocations({ locations }: Props) {
+  console.log(locations);
   return (
     <>
       <h1>All Locations</h1>

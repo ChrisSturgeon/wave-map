@@ -1,6 +1,12 @@
 import Head from 'next/head';
 import NewForm from '@/components/NewForm/NewForm';
-export default function Home() {
+import { generateCountryOptions } from '@/server/resources/countries';
+
+interface HomeProps {
+  countriesOptions: [];
+}
+
+export default function Home({ countriesOptions }: HomeProps) {
   return (
     <>
       <Head>
@@ -10,8 +16,18 @@ export default function Home() {
       </Head>
       <div>
         <h1>Home page</h1>
-        <NewForm />
+        <NewForm countriesOptions={countriesOptions} />
       </div>
     </>
   );
+}
+
+export async function getStaticProps() {
+  const countriesOptions = Array(generateCountryOptions());
+
+  return {
+    props: {
+      countriesOptions: countriesOptions,
+    },
+  };
 }
