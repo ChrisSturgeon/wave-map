@@ -11,12 +11,24 @@ datasource db {
 }
 
 model Location {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  name      String
-  userId    String
-  user      User      @relation(fields: [userId], references: [id])
+  id              Int       @id @default(autoincrement())
+  name            String
+  latitude        Float
+  longitude       Float
+  country         String
+  surfing         Boolean   @default(false)
+  windsurfing     Boolean   @default(false)
+  kitesurfing     Boolean   @default(false)
+  wingsurfing     Boolean   @default(false)
+  paddleboarding  Boolean   @default(false)
+  parking         String
+  toilets         String
+  wavetype        String
+  cafe            String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
 }
 
 model User {

@@ -1,19 +1,36 @@
+import { generateCountryOptions } from '@/server/resources/countries';
 import { GetStaticProps } from 'next';
 import { useState } from 'react';
 import Select from 'react-select';
+import { ActionMeta } from 'react-select';
 
 interface Props {
   countriesOptions: [];
 }
 
+interface CountryType {
+  value: string;
+  label: string;
+}
+
 export default function NewForm({ countriesOptions }: Props) {
-  console.log(countriesOptions);
-  const [name, setName] = useState('');
-  const [country, setCountry] = useState<string | null>(null);
+  const countries: CountryType[] = generateCountryOptions();
+  const [name, setName] = useState<string>('');
+  const [selectedCountry, setSelectedCountry] = useState<CountryType>();
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>): void {
     setName(event.target.value);
   }
+
+  const handleSelectionChange = (
+    option: CountryType | null,
+    actionMeta: ActionMeta<CountryType>
+  ) => {
+    if (option) {
+      setSelectedCountry(option);
+    }
+    setSelectedCountry(undefined);
+  };
 
   async function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -24,6 +41,7 @@ export default function NewForm({ countriesOptions }: Props) {
       },
       body: JSON.stringify({
         name: name,
+        country: selectedCountry?.value,
       }),
     });
 
@@ -36,18 +54,15 @@ export default function NewForm({ countriesOptions }: Props) {
       <form onSubmit={handleSubmit} style={{ minHeight: '100vh' }}>
         <label htmlFor="name">Location Name</label>
         <Select
-          value={country}
+          value={selectedCountry}
           options={countriesOptions}
-          onChange={(selectedOption: string | null) => {
-            setCountry(selectedOption);
-          }}
+          onChange={handleSelectionChange}
+          isClearable={true}
           instanceId="country-select"
         />
         <input onChange={handleChange} />
         <button type="submit">Add</button>
       </form>
-      <button onClick={() => console.log(country)}>Log Country</button>
-      <p>Hi</p>
     </>
   );
 }

@@ -7,7 +7,7 @@ export default function Login() {
     return (
       <>
         <p>
-          Signed in as {session.user!.email}
+          Signed in as {session.user!.name}
           <button onClick={() => signOut()}>Sign Out</button>
         </p>
       </>

@@ -23,7 +23,8 @@ export default function Home({ countriesOptions }: HomeProps) {
 }
 
 export async function getStaticProps() {
-  const countriesOptions = Array(generateCountryOptions());
+  const data = Array(generateCountryOptions());
+  const countriesOptions = data[0];
 
   return {
     props: {

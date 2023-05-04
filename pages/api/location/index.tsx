@@ -46,10 +46,11 @@ export default async function handler(
       return;
     }
 
-    const { name } = req.body;
+    const { name, country } = req.body;
     const location = await prisma.location.create({
       data: {
         name,
+        country,
         userId: prismaUser!.id,
       },
     });
