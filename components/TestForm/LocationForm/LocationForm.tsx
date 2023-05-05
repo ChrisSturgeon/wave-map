@@ -1,45 +1,37 @@
 import { useMultiStepForm } from '@/hooks/useMultiStepForm';
+import UserForm from './UserForm';
+import AddressForm from './AddressForm';
+import AccountForm from './AccountForm';
 import { FormEvent, useState } from 'react';
 
-// Component Imports
-import GeographicForm from './GeographicForm/GeographicForm';
-import WaveAndSportsForm from './WaveAndSportsForm/WaveAndSportsForm';
-import FacilitiesForm from './FacilitiesForm/FacilitiesForm';
-
-type LocationFormData = {
-  name: string;
-  latitude: number;
-  longitude: number;
-  country: string;
-  surfing: boolean;
-  windsurfing: boolean;
-  kitesurfing: boolean;
-  wingsurfing: boolean;
-  paddleboarding: boolean;
-  parking: string;
-  toilets: string;
-  cafe: string;
+type FormData = {
+  firstName: string;
+  lastName: string;
+  age: string;
+  street: string;
+  city: string;
+  state: string;
+  zip: string;
+  email: string;
+  password: string;
 };
 
-const INITIAL_DATA: LocationFormData = {
-  name: '',
-  latitude: 51.4934,
-  longitude: 0.0,
-  country: '',
-  surfing: false,
-  windsurfing: false,
-  kitesurfing: false,
-  wingsurfing: false,
-  paddleboarding: false,
-  parking: '',
-  toilets: '',
-  cafe: '',
+const INITIAL_DATA: FormData = {
+  firstName: '',
+  lastName: '',
+  age: '',
+  street: '',
+  city: '',
+  state: '',
+  zip: '',
+  email: '',
+  password: '',
 };
 
-export function LocationForm() {
+export function TestLocationForm() {
   const [data, setData] = useState(INITIAL_DATA);
 
-  function updateFields(fields: Partial<LocationFormData>) {
+  function updateFields(fields: Partial<FormData>) {
     setData((prev) => {
       return { ...prev, ...fields };
     });
@@ -47,13 +39,9 @@ export function LocationForm() {
 
   const { step, steps, currentStepIndex, isFirstStep, isLastStep, back, next } =
     useMultiStepForm([
-      <GeographicForm
-        {...data}
-        updateFields={updateFields}
-        key="gegraphicForm"
-      />,
-      <WaveAndSportsForm {...data} key="waveAndSportsForm" />,
-      <FacilitiesForm {...data} key="facilitiesForm" />,
+      <UserForm key="user" {...data} updateFields={updateFields} />,
+      <AddressForm key="address" {...data} updateFields={updateFields} />,
+      <AccountForm key="account" {...data} updateFields={updateFields} />,
     ]);
 
   function onSubmit(e: FormEvent) {

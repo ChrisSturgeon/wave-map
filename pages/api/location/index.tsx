@@ -46,11 +46,20 @@ export default async function handler(
       return;
     }
 
-    const { name, country } = req.body;
     const location = await prisma.location.create({
       data: {
-        name,
-        country,
+        name: req.body.name,
+        country: req.body.country,
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
+        surfing: Boolean(req.body.surfing),
+        windsurfing: Boolean(req.body.windsurfing),
+        kitesurfing: Boolean(req.body.kitesurfing),
+        paddleboarding: Boolean(req.body.paddleboarding),
+        parking: req.body.parking,
+        toilets: req.body.toilets,
+        wavetype: req.body.wavetype,
+        cafe: req.body.cafe,
         userId: prismaUser!.id,
       },
     });
