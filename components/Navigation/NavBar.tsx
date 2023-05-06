@@ -14,6 +14,9 @@ export default function NavBar() {
           <li>
             <Link href="/all">All Locations</Link>
           </li>
+          <li>
+            <Link href="/new">New Location</Link>
+          </li>
         </ul>
         <Login />
       </nav>

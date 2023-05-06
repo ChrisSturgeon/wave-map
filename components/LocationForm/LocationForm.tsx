@@ -11,6 +11,10 @@ type LocationFormData = {
   latitude: number;
   longitude: number;
   country: string;
+  waveType: {
+    label: string;
+    value: string;
+  } | null;
   surfing: boolean;
   windsurfing: boolean;
   kitesurfing: boolean;
@@ -26,6 +30,7 @@ const INITIAL_DATA: LocationFormData = {
   latitude: 51.4934,
   longitude: 0.0,
   country: '',
+  waveType: null,
   surfing: false,
   windsurfing: false,
   kitesurfing: false,
@@ -45,14 +50,26 @@ export function LocationForm() {
     });
   }
 
+  //   <GeographicForm
+  //   {...data}
+  //   updateFields={updateFields}
+  //   key="gegraphicForm"
+  // />,
+
+  const logState = (e: FormEvent): void => {
+    e.preventDefault();
+    console.log(data);
+    return;
+  };
+
   const { step, steps, currentStepIndex, isFirstStep, isLastStep, back, next } =
     useMultiStepForm([
-      <GeographicForm
+      <WaveAndSportsForm
+        logState={logState}
         {...data}
         updateFields={updateFields}
-        key="gegraphicForm"
+        key="waveAndSportsForm"
       />,
-      <WaveAndSportsForm {...data} key="waveAndSportsForm" />,
       <FacilitiesForm {...data} key="facilitiesForm" />,
     ]);
 
