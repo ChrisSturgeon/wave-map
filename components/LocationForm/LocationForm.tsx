@@ -17,11 +17,6 @@ type LocationFormData = {
     value: string;
   } | null;
   sports: readonly SportType[] | null;
-  surfing: boolean;
-  windsurfing: boolean;
-  kitesurfing: boolean;
-  wingsurfing: boolean;
-  paddleboarding: boolean;
   parking: string;
   toilets: string;
   cafe: string;
@@ -34,21 +29,16 @@ const INITIAL_DATA: LocationFormData = {
   country: '',
   waveType: null,
   sports: null,
-  surfing: false,
-  windsurfing: false,
-  kitesurfing: false,
-  wingsurfing: false,
-  paddleboarding: false,
   parking: '',
   toilets: '',
   cafe: '',
 };
 
-export function LocationForm() {
-  const [data, setData] = useState(INITIAL_DATA);
+export function LocationForm({ location }: { location: any }) {
+  const [data, setData] = useState(location ? location : INITIAL_DATA);
 
   function updateFields(fields: Partial<LocationFormData>) {
-    setData((prev) => {
+    setData((prev: any) => {
       return { ...prev, ...fields };
     });
   }
@@ -61,6 +51,12 @@ export function LocationForm() {
 
   const { step, steps, currentStepIndex, isFirstStep, isLastStep, back, next } =
     useMultiStepForm([
+      <GeographicForm
+        {...data}
+        updateFields={updateFields}
+        key="geographic-form"
+      />,
+
       <WaveAndSportsForm
         logState={logState}
         {...data}
@@ -74,13 +70,61 @@ export function LocationForm() {
       />,
     ]);
 
-  function onSubmit(e: FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
 
     if (!isLastStep) {
       next();
       return;
     }
+
+    const bodyData = {
+      name: data.name,
+      country: data.country,
+      latitude: data.latitude,
+      longitude: data.longitude,
+      waveType: data.waveType!.value,
+      surfing: data.sports!.find(
+        (sport: SportType) => sport.value === 'surfing'
+      )
+        ? true
+        : false,
+      windsurfing: data.sports!.find(
+        (sport: SportType) => sport.value === 'windsurfing'
+      )
+        ? true
+        : false,
+      kitesurfing: data.sports!.find(
+        (sport: SportType) => sport.value === 'kitesurfing'
+      )
+        ? true
+        : false,
+      wingsurfing: data.sports!.find(
+        (sport: SportType) => sport.value === 'wingsurfing'
+      )
+        ? true
+        : false,
+      paddleboarding: data.sports!.find(
+        (sport: SportType) => sport.value === 'paddleboarding'
+      )
+        ? true
+        : false,
+      parking: data.parking,
+      toilets: data.toilets,
+      cafe: data.cafe,
+    };
+
+    const response = await fetch('/api/location', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyData),
+    });
+
+    const returnData = await response.json();
+    console.log(returnData);
+
     alert('Successful account creation');
   }
 

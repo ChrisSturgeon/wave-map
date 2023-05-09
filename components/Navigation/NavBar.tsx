@@ -12,10 +12,10 @@ export default function NavBar() {
             <Link href="/">Home</Link>
           </li>
           <li>
-            <Link href="/all">All Locations</Link>
+            <Link href="/location/all">All Locations</Link>
           </li>
           <li>
-            <Link href="/new">New Location</Link>
+            <Link href="/location/new">New Location</Link>
           </li>
         </ul>
         <Login />
