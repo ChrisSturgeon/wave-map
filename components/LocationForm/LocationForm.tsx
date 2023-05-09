@@ -1,5 +1,6 @@
 import { useMultiStepForm } from '@/hooks/useMultiStepForm';
 import { FormEvent, useState } from 'react';
+import { SportType } from './WaveAndSportsForm/SportsSelect/SportsSelect';
 
 // Component Imports
 import GeographicForm from './GeographicForm/GeographicForm';
@@ -15,6 +16,7 @@ type LocationFormData = {
     label: string;
     value: string;
   } | null;
+  sports: readonly SportType[] | null;
   surfing: boolean;
   windsurfing: boolean;
   kitesurfing: boolean;
@@ -31,6 +33,7 @@ const INITIAL_DATA: LocationFormData = {
   longitude: 0.0,
   country: '',
   waveType: null,
+  sports: null,
   surfing: false,
   windsurfing: false,
   kitesurfing: false,
@@ -50,12 +53,6 @@ export function LocationForm() {
     });
   }
 
-  //   <GeographicForm
-  //   {...data}
-  //   updateFields={updateFields}
-  //   key="gegraphicForm"
-  // />,
-
   const logState = (e: FormEvent): void => {
     e.preventDefault();
     console.log(data);
@@ -70,7 +67,11 @@ export function LocationForm() {
         updateFields={updateFields}
         key="waveAndSportsForm"
       />,
-      <FacilitiesForm {...data} key="facilitiesForm" />,
+      <FacilitiesForm
+        {...data}
+        updateFields={updateFields}
+        key="facilitiesForm"
+      />,
     ]);
 
   function onSubmit(e: FormEvent) {

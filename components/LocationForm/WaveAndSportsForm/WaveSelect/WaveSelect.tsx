@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import Select, { ActionMeta } from 'react-select';
 
 export type WaveType = {
@@ -38,7 +39,9 @@ export default function WaveSelect({
       value={waveType}
       onChange={handleWaveSelectionChange}
       isClearable={true}
-      instanceId="wave-select"
+      instanceId={useId()}
+      required
+      name="wave-select"
     />
   );
 }
