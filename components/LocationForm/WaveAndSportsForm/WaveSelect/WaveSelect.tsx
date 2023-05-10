@@ -26,7 +26,6 @@ export default function WaveSelect({
   updateFields,
 }: WaveSelectProps) {
   function handleWaveSelectionChange(option: WaveType | null) {
-    console.log(option);
     if (option) {
       updateFields({ waveType: option });
       return;

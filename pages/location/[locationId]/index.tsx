@@ -27,7 +27,6 @@ interface LocationPageProps {
 
 export default function LocationPage({ location }: LocationPageProps) {
   const router = useRouter();
-  // console.log(location);
 
   return <div>I am the page for {location.name} </div>;
 }

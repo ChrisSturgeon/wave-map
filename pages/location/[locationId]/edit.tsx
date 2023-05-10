@@ -4,10 +4,36 @@ import { prisma } from '@/server/db/client';
 import { LocationForm } from '@/components/LocationForm/LocationForm';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
+import { WaveType } from '@/components/LocationForm/WaveAndSportsForm/WaveSelect/WaveSelect';
+import { SportType } from '@/components/LocationForm/WaveAndSportsForm/SportsSelect/SportsSelect';
 
-export default function LocationEdit({ location }) {
+interface Location {
+  id: number;
+  name: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+  latitude: number;
+  longitude: number;
+  wavetype: string;
+  waveType: WaveType;
+  sports: SportType[];
+  surfing: boolean;
+  windsurfing: boolean;
+  kitesurfing: boolean;
+  wingsurfing: boolean;
+  paddleboarding: boolean;
+  parking: string;
+  toilets: string;
+  cafe: string;
+}
+
+interface LocationEditProps {
+  location: Location;
+}
+
+export default function LocationEdit({ location }: LocationEditProps) {
   const router = useRouter();
-  console.log(location);
 
   return (
     <>
