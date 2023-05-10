@@ -1,6 +1,9 @@
 import { useRouter } from 'next/router';
+import { GetServerSideProps } from 'next';
 import { prisma } from '@/server/db/client';
 import { LocationForm } from '@/components/LocationForm/LocationForm';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
 
 export default function LocationEdit({ location }) {
   const router = useRouter();
@@ -14,7 +17,18 @@ export default function LocationEdit({ location }) {
   );
 }
 
-export const getServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  // Verify valid session
+  const session = await getServerSession(context.req, context.res, authOptions);
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+
   const locationId = context.query.locationId;
 
   const location = await prisma.location.findUnique({

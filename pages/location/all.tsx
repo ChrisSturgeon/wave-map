@@ -1,6 +1,7 @@
 import { prisma } from '@/server/db/client';
 import { DefaultUser } from 'next-auth';
 import DeleteLocation from '@/components/DeleteLocation/DeleteLocation';
+import Link from 'next/link';
 
 interface LocationType {
   id: Number;
@@ -23,7 +24,7 @@ export default function AllLocations({ locations }: Props) {
         {locations.map((location: LocationType) => {
           return (
             <li key={location.name as React.Key}>
-              {location.name} posted by {location.user.name}
+              <Link href={`${location.id}`}>{location.name}</Link>
               <DeleteLocation location={location.id} />
             </li>
           );

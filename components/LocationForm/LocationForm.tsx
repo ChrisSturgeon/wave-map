@@ -1,5 +1,6 @@
 import { useMultiStepForm } from '@/hooks/useMultiStepForm';
 import { FormEvent, useState } from 'react';
+import { useRouter } from 'next/router';
 import { SportType } from './WaveAndSportsForm/SportsSelect/SportsSelect';
 
 // Component Imports
@@ -35,6 +36,7 @@ const INITIAL_DATA: LocationFormData = {
 };
 
 export function LocationForm({ location }: { location: any }) {
+  const router = useRouter();
   const [data, setData] = useState(location ? location : INITIAL_DATA);
 
   function updateFields(fields: Partial<LocationFormData>) {
@@ -114,8 +116,13 @@ export function LocationForm({ location }: { location: any }) {
       cafe: data.cafe,
     };
 
-    const response = await fetch('/api/location', {
-      method: 'POST',
+    const fetchMethod = location ? 'PUT' : 'POST';
+    const fetchURL = location
+      ? `/api/location/${router.query.locationId}`
+      : '/api/location';
+
+    const response = await fetch(fetchURL, {
+      method: fetchMethod,
       headers: {
         'Content-Type': 'application/json',
       },
