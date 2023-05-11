@@ -7,6 +7,14 @@ import { GetServerSideProps } from 'next';
 import AllLocationsNav from '@/components/AllLocationsNav/AllLocationsNav';
 import CountryFilter from '@/components/AllLocationsNav/CountryFilter';
 
+// Helper imports
+import generateDistinctCountriesValues from '@/server/react-select-helpers/generateDistinctCountriesValues';
+
+interface CountryValue {
+  label: string;
+  value: string;
+}
+
 interface LocationType {
   id: Number;
   name: String;
@@ -19,16 +27,20 @@ interface Props {
   locations: LocationType[];
   locationsCount: number;
   totalPages: number;
+  countryValues: CountryValue[];
 }
 
 export default function AllLocations({
   locations,
   locationsCount,
   totalPages,
+  countryValues,
 }: Props) {
   const router = useRouter();
   const currentPage = Number(router.query['page']);
   const country = router.query['country'] as string;
+
+  console.log(countryValues);
 
   return (
     <div style={{ minHeight: '100vh' }}>
@@ -39,7 +51,7 @@ export default function AllLocations({
         totalPages={totalPages}
         country={country}
       />
-      <CountryFilter />
+      <CountryFilter countryValues={countryValues} />
       <ul>
         {locations.map((location: LocationType) => {
           return (
@@ -59,6 +71,27 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const country = context.query.country as string;
   const pageSize = 2;
 
+  // Query db to get distinct countries and generate their
+  // options for use with 'react-select'
+  const distinctCountries = await prisma.location.findMany({
+    distinct: ['country'],
+    select: {
+      country: true,
+    },
+    orderBy: {
+      country: 'asc',
+    },
+  });
+
+  console.log(distinctCountries);
+
+  const countryValues = await generateDistinctCountriesValues(
+    distinctCountries
+  );
+  console.log(countryValues);
+
+  // console.log(distinctCountries);
+
   // Query db with country params
   if (country) {
     const countryFormatted = country.charAt(0).toUpperCase() + country.slice(1);
@@ -73,13 +106,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       where: {
         country: countryFormatted,
       },
+      select: {
+        id: true,
+        name: true,
+      },
       skip: (page - 1) * 2,
       take: pageSize,
       orderBy: {
         createdAt: 'desc',
-      },
-      include: {
-        user: true,
       },
     });
 
@@ -97,6 +131,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         locations: JSON.parse(JSON.stringify(locations)),
         locationsCount: locationsCount,
         totalPages: totalPages,
+        countryValues: countryValues,
       },
     };
   }
@@ -108,8 +143,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     orderBy: {
       createdAt: 'desc',
     },
-    include: {
-      user: true,
+    select: {
+      id: true,
+      name: true,
     },
   });
 
@@ -130,6 +166,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       locations: JSON.parse(JSON.stringify(locations)),
       locationsCount: locationsCount,
       totalPages: totalPages,
+      countryValues: countryValues,
     },
   };
 };

@@ -1,19 +1,20 @@
 import { useId } from 'react';
-import Select from 'react-select';
 import { useRouter } from 'next/router';
+import Select from 'react-select';
 
 type CountryType = {
   label: string;
   value: string;
 };
 
-// TODO - make this the full list of countries
-const options = [
-  { label: 'England', value: 'england' },
-  { label: 'Hawaii', value: 'hawaii' },
-];
+interface CountryFilterProps {
+  countryValues: {
+    label: string;
+    value: string;
+  }[];
+}
 
-export default function CountryFilter() {
+export default function CountryFilter({ countryValues }: CountryFilterProps) {
   const router = useRouter();
   const country = router.query['country'] as string;
 
@@ -35,7 +36,7 @@ export default function CountryFilter() {
               }
             : null
         }
-        options={options}
+        options={countryValues}
         onChange={handleChange}
         isClearable
         instanceId={useId()}

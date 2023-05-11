@@ -1,6 +1,6 @@
-import { useRouter } from 'next/router';
 import { prisma } from '@/server/db/client';
 import { GetStaticPaths, GetStaticProps } from 'next';
+import Link from 'next/link';
 
 interface Location {
   id: number;
@@ -26,14 +26,24 @@ interface LocationPageProps {
 }
 
 export default function LocationPage({ location }: LocationPageProps) {
-  const router = useRouter();
-
-  return <div>I am the page for {location.name} </div>;
+  console.log(location);
+  return (
+    <div>
+      <p>I am the page for {location.name}</p>
+      <Link href={`${location.id}/edit`}>Edit</Link>
+    </div>
+  );
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const { params } = context;
   const id = Number(params!.locationId);
+
+  if (Number.isNaN(Number(id))) {
+    return {
+      notFound: true,
+    };
+  }
 
   const location = (await prisma.location.findUnique({
     where: {
@@ -43,10 +53,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   if (!location) {
     return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
+      notFound: true,
     };
   }
 

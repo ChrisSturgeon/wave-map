@@ -3,15 +3,17 @@ type countryType = {
   label: string;
 };
 
+// Generates list of valid 'react-select' options for all
+// geographic countries
 export function generateCountryOptions(): countryType[] {
-  let options: countryType[] = [];
-  countries.forEach((country) => {
-    options.push({
-      value: country.country.toLowerCase(),
+  const countryOptions = countries.map((country) => {
+    return {
       label: country.country,
-    });
+      value: country.country,
+    };
   });
-  return options;
+
+  return countryOptions;
 }
 const countries = [
   {

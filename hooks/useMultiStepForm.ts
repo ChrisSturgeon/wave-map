@@ -2,6 +2,7 @@ import { useState, ReactElement } from 'react';
 
 export function useMultiStepForm(steps: ReactElement[]) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [isSubmitting, setIsSubmiting] = useState(false);
 
   function next() {
     setCurrentStepIndex((prev) => {
@@ -36,5 +37,7 @@ export function useMultiStepForm(steps: ReactElement[]) {
     next,
     back,
     steps,
+    isSubmitting,
+    setIsSubmiting,
   };
 }

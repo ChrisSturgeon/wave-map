@@ -1,18 +1,24 @@
-import { useMultiStepForm } from '@/hooks/useMultiStepForm';
-import { FormEvent, useState } from 'react';
+// Next & React imports
+import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { SportType } from './WaveAndSportsForm/SportsSelect/SportsSelect';
 
-// Component Imports
+// Component, Hook and Helper imports
 import GeographicForm from './GeographicForm/GeographicForm';
 import WaveAndSportsForm from './WaveAndSportsForm/WaveAndSportsForm';
 import FacilitiesForm from './FacilitiesForm/FacilitiesForm';
+import { useMultiStepForm } from '@/hooks/useMultiStepForm';
+import { generateLocationRequestBody } from '@/utils/Location/generateLocationRequestBody';
 
-type LocationFormData = {
+// Type imports
+import { CountryType } from './GeographicForm/GeographicForm';
+import { SportType } from './WaveAndSportsForm/SportsSelect/SportsSelect';
+import { FormEvent } from 'react';
+
+export interface LocationFormData {
   name: string;
   latitude: number;
   longitude: number;
-  country: string;
+  country: CountryType | null;
   waveType: {
     label: string;
     value: string;
@@ -21,13 +27,24 @@ type LocationFormData = {
   parking: string;
   toilets: string;
   cafe: string;
-};
+}
+
+interface LocationFormProps {
+  location?: LocationFormData & {
+    wavetype: string;
+    surfing: boolean;
+    windsurfing: boolean;
+    kitesurfing: boolean;
+    wingsurfing: boolean;
+    paddleboarding: boolean;
+  };
+}
 
 const INITIAL_DATA: LocationFormData = {
   name: '',
   latitude: 51.4934,
   longitude: 0.0,
-  country: '',
+  country: null,
   waveType: null,
   sports: null,
   parking: '',
@@ -35,7 +52,7 @@ const INITIAL_DATA: LocationFormData = {
   cafe: '',
 };
 
-export function LocationForm({ location }: { location: any }) {
+export function LocationForm({ location }: LocationFormProps) {
   const router = useRouter();
   const [data, setData] = useState(location ? location : INITIAL_DATA);
 
@@ -51,26 +68,34 @@ export function LocationForm({ location }: { location: any }) {
     return;
   };
 
-  const { step, steps, currentStepIndex, isFirstStep, isLastStep, back, next } =
-    useMultiStepForm([
-      <GeographicForm
-        {...data}
-        updateFields={updateFields}
-        key="geographic-form"
-      />,
-
-      <WaveAndSportsForm
-        logState={logState}
-        {...data}
-        updateFields={updateFields}
-        key="waveAndSportsForm"
-      />,
-      <FacilitiesForm
-        {...data}
-        updateFields={updateFields}
-        key="facilitiesForm"
-      />,
-    ]);
+  const {
+    step,
+    steps,
+    currentStepIndex,
+    isFirstStep,
+    isLastStep,
+    back,
+    next,
+    isSubmitting,
+    setIsSubmiting,
+  } = useMultiStepForm([
+    <GeographicForm
+      {...data}
+      updateFields={updateFields}
+      key="geographic-form"
+    />,
+    <WaveAndSportsForm
+      {...data}
+      updateFields={updateFields}
+      key="waveAndSportsForm"
+      logState={logState}
+    />,
+    <FacilitiesForm
+      {...data}
+      updateFields={updateFields}
+      key="facilitiesForm"
+    />,
+  ]);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -80,42 +105,8 @@ export function LocationForm({ location }: { location: any }) {
       return;
     }
 
-    const bodyData = {
-      name: data.name,
-      country: data.country,
-      latitude: data.latitude,
-      longitude: data.longitude,
-      waveType: data.waveType!.value,
-      surfing: data.sports!.find(
-        (sport: SportType) => sport.value === 'surfing'
-      )
-        ? true
-        : false,
-      windsurfing: data.sports!.find(
-        (sport: SportType) => sport.value === 'windsurfing'
-      )
-        ? true
-        : false,
-      kitesurfing: data.sports!.find(
-        (sport: SportType) => sport.value === 'kitesurfing'
-      )
-        ? true
-        : false,
-      wingsurfing: data.sports!.find(
-        (sport: SportType) => sport.value === 'wingsurfing'
-      )
-        ? true
-        : false,
-      paddleboarding: data.sports!.find(
-        (sport: SportType) => sport.value === 'paddleboarding'
-      )
-        ? true
-        : false,
-      parking: data.parking,
-      toilets: data.toilets,
-      cafe: data.cafe,
-    };
-
+    setIsSubmiting(true);
+    const bodyData = generateLocationRequestBody(data);
     const fetchMethod = location ? 'PUT' : 'POST';
     const fetchURL = location
       ? `/api/location/${router.query.locationId}`
@@ -129,10 +120,11 @@ export function LocationForm({ location }: { location: any }) {
       body: JSON.stringify(bodyData),
     });
 
-    const returnData = await response.json();
-    console.log(returnData);
-
-    alert('Successful account creation');
+    if (response.ok) {
+      const createdLocationData = await response.json();
+      console.log(createdLocationData);
+      router.push(`/location/${createdLocationData.id}`);
+    }
   }
 
   return (
@@ -145,6 +137,7 @@ export function LocationForm({ location }: { location: any }) {
         margin: '1rem',
         borderRadius: '.5rem',
         maxWidth: 'max-content',
+        minHeight: ' 300px',
       }}
     >
       <form onSubmit={onSubmit}>
@@ -165,7 +158,9 @@ export function LocationForm({ location }: { location: any }) {
               Back
             </button>
           )}
-          <button type="submit">{isLastStep ? 'Finish' : 'Next'}</button>
+          <button type="submit" disabled={isSubmitting}>
+            {isLastStep ? 'Finish' : 'Next'}
+          </button>
         </div>
       </form>
     </div>

@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import NewForm from '@/components/NewForm/NewForm';
 import { generateCountryOptions } from '@/server/resources/countries';
 
 interface HomeProps {
@@ -16,7 +15,6 @@ export default function Home({ countriesOptions }: HomeProps) {
       </Head>
       <div>
         <h1>Home page</h1>
-        <NewForm countriesOptions={countriesOptions} />
       </div>
     </>
   );
