@@ -1,11 +1,6 @@
 import Head from 'next/head';
-import { generateCountryOptions } from '@/server/resources/countries';
 
-interface HomeProps {
-  countriesOptions: [];
-}
-
-export default function Home({ countriesOptions }: HomeProps) {
+export default function Home() {
   return (
     <>
       <Head>
@@ -18,15 +13,4 @@ export default function Home({ countriesOptions }: HomeProps) {
       </div>
     </>
   );
-}
-
-export async function getStaticProps() {
-  const data = Array(generateCountryOptions());
-  const countriesOptions = data[0];
-
-  return {
-    props: {
-      countriesOptions: countriesOptions,
-    },
-  };
 }

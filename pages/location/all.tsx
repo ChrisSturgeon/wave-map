@@ -1,13 +1,21 @@
-import { prisma } from '@/server/db/client';
-import { DefaultUser } from 'next-auth';
-import DeleteLocation from '@/components/DeleteLocation/DeleteLocation';
+// Next & React imports
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+
+// Auth imports
+import { prisma } from '@/server/db/client';
+
+// Type imports
 import { GetServerSideProps } from 'next';
+import { DefaultUser } from 'next-auth';
+
+// Component imports
+import DeleteLocation from '@/components/DeleteLocation/DeleteLocation';
 import AllLocationsNav from '@/components/AllLocationsNav/AllLocationsNav';
 import CountryFilter from '@/components/AllLocationsNav/CountryFilter';
 
 // Helper imports
+import { capitaliseWord } from '@/server/resources/helpers';
 import generateDistinctCountriesValues from '@/server/react-select-helpers/generateDistinctCountriesValues';
 
 interface CountryValue {
@@ -40,8 +48,6 @@ export default function AllLocations({
   const currentPage = Number(router.query['page']);
   const country = router.query['country'] as string;
 
-  console.log(countryValues);
-
   return (
     <div style={{ minHeight: '100vh' }}>
       <h1>All Locations</h1>
@@ -67,41 +73,20 @@ export default function AllLocations({
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const page = Number(context.query.page);
+  const currentPage = Number(context.query.page);
   const country = context.query.country as string;
-  const pageSize = 2;
+  const pageSize = 5;
+  const countryValues = await generateDistinctCountriesValues();
 
-  // Query db to get distinct countries and generate their
-  // options for use with 'react-select'
-  const distinctCountries = await prisma.location.findMany({
-    distinct: ['country'],
-    select: {
-      country: true,
-    },
-    orderBy: {
-      country: 'asc',
-    },
-  });
-
-  console.log(distinctCountries);
-
-  const countryValues = await generateDistinctCountriesValues(
-    distinctCountries
-  );
-  console.log(countryValues);
-
-  // console.log(distinctCountries);
-
-  // Query db with country params
+  // Query db for all locations with country parameter
   if (country) {
-    const countryFormatted = country.charAt(0).toUpperCase() + country.slice(1);
+    const countryFormatted = capitaliseWord(country);
     const locationsCount = await prisma.location.count({
       where: {
         country: countryFormatted,
       },
     });
-    const totalPages = Math.ceil(locationsCount / pageSize);
-
+    const totalPagesCount = Math.ceil(locationsCount / pageSize);
     const locations = await prisma.location.findMany({
       where: {
         country: countryFormatted,
@@ -110,10 +95,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         id: true,
         name: true,
       },
-      skip: (page - 1) * 2,
+      skip: (currentPage - 1) * 2,
       take: pageSize,
       orderBy: {
-        createdAt: 'desc',
+        name: 'asc',
       },
     });
 
@@ -130,7 +115,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       props: {
         locations: JSON.parse(JSON.stringify(locations)),
         locationsCount: locationsCount,
-        totalPages: totalPages,
+        totalPages: totalPagesCount,
         countryValues: countryValues,
       },
     };
@@ -138,10 +123,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   // Query db with page only
   const locations = await prisma.location.findMany({
-    skip: (page - 1) * 2,
+    skip: (currentPage - 1) * 2,
     take: pageSize,
     orderBy: {
-      createdAt: 'desc',
+      name: 'asc',
     },
     select: {
       id: true,
@@ -159,13 +144,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const locationsCount = await prisma.location.count();
-  const totalPages = Math.ceil(locationsCount / pageSize);
+  const totalPagesCount = Math.ceil(locationsCount / pageSize);
 
   return {
     props: {
       locations: JSON.parse(JSON.stringify(locations)),
       locationsCount: locationsCount,
-      totalPages: totalPages,
+      totalPages: totalPagesCount,
       countryValues: countryValues,
     },
   };

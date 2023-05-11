@@ -1,17 +1,27 @@
 import { prisma } from '../db/client';
 
-type CountryType = {
-  country: string;
-};
+async function generateDistinctCountries() {
+  const distinctCountries = await prisma.location.findMany({
+    distinct: ['country'],
+    select: {
+      country: true,
+    },
+    orderBy: {
+      country: 'asc',
+    },
+  });
 
-// Returns array of  valid 'react-select' values from given array
-// of country names. Queries db to find count of locations
-// for each and adds this to the label
-export default async function generateDistinctCountriesValues(
-  countries: CountryType[]
-) {
-  return await Promise.all(
-    countries.map(async (countryObj) => {
+  return distinctCountries;
+}
+
+// Returns array of valid country values/options with
+// number of locations for each included in label to use with
+// 'react-select' component to filter locations by country
+export default async function generateDistinctCountriesValues() {
+  const distinctCountries = await generateDistinctCountries();
+
+  const countriesValues = await Promise.all(
+    distinctCountries.map(async (countryObj) => {
       const locationsCount = await prisma.location.count({
         where: {
           country: countryObj.country,
@@ -29,4 +39,6 @@ export default async function generateDistinctCountriesValues(
       };
     })
   );
+
+  return countriesValues;
 }
