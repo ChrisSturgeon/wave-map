@@ -18,6 +18,8 @@ import SportFilter from '@/components/AllLocationsNav/SportFilter';
 // Helper imports
 import { capitaliseWord } from '@/server/resources/helpers';
 import generateDistinctCountriesValues from '@/server/react-select-helpers/generateDistinctCountriesValues';
+import AllMap from '@/components/AllLocationsNav/AllMap';
+import dynamic from 'next/dynamic';
 
 interface CountryValue {
   label: string;
@@ -25,11 +27,10 @@ interface CountryValue {
 }
 
 interface LocationType {
-  id: Number;
-  name: String;
-  createdAt: Date;
-  updatedAt: Date;
-  user: DefaultUser;
+  id: number;
+  name: string;
+  latitude: number;
+  longitude: number;
 }
 
 interface Props {
@@ -49,7 +50,13 @@ export default function AllLocations({
   const currentPage = Number(router.query['page']);
   const country = router.query['country'] as string;
   const sport = router.query['sport'] as string;
-  console.log(locations);
+
+  const MapWithNoSSR = dynamic(
+    () => import('@/components/AllLocationsNav/AllMap'),
+    {
+      ssr: false,
+    }
+  );
 
   return (
     <div style={{ minHeight: '100vh' }}>
@@ -62,7 +69,7 @@ export default function AllLocations({
       />
       <CountryFilter countryValues={countryValues} />
       <SportFilter />
-      <ul>
+      {/* <ul>
         {locations.map((location: LocationType) => {
           return (
             <li key={location.name as React.Key}>
@@ -71,7 +78,8 @@ export default function AllLocations({
             </li>
           );
         })}
-      </ul>
+      </ul> */}
+      <MapWithNoSSR locations={locations} />
     </div>
   );
 }

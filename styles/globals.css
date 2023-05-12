@@ -14,3 +14,10 @@ body {
 a {
   color: inherit;
 }
+
+/* Following neccessary to remove the 
+background square from leaflet marker*/
+.leaflet-div-icon {
+  background: none !important;
+  border: none !important;
+}
