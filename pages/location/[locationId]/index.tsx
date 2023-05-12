@@ -26,7 +26,6 @@ interface LocationPageProps {
 }
 
 export default function LocationPage({ location }: LocationPageProps) {
-  console.log(location);
   return (
     <div>
       <p>I am the page for {location.name}</p>

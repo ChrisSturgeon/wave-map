@@ -124,7 +124,11 @@ export function LocationForm({ location }: LocationFormProps) {
       const createdLocationData = await response.json();
       console.log(createdLocationData);
       router.push(`/location/${createdLocationData.id}`);
+      return;
     }
+
+    const errorData = await response.json();
+    console.log(errorData);
   }
 
   return (

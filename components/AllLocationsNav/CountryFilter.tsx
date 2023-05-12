@@ -1,6 +1,7 @@
 import { useId } from 'react';
 import { useRouter } from 'next/router';
 import Select from 'react-select';
+import { capitaliseWord } from '@/server/resources/helpers';
 
 type CountryType = {
   label: string;
@@ -20,9 +21,14 @@ export default function CountryFilter({ countryValues }: CountryFilterProps) {
 
   function handleChange(option: CountryType | null) {
     if (option) {
-      router.push(`/location/all?page=1&country=${option.value}`);
+      const prevPath = router.asPath;
+      const pathWithoutCountry = prevPath.replace(`&country=${country}`, '');
+      const newPath = pathWithoutCountry + `&country=${option.value}`;
+      router.push(newPath);
     } else {
-      router.push(`/location/all?page=1`);
+      const prevPath = router.asPath;
+      const newPath = prevPath.replace(`&country=${country}`, '');
+      router.push(newPath);
     }
   }
   return (
@@ -31,7 +37,7 @@ export default function CountryFilter({ countryValues }: CountryFilterProps) {
         value={
           country
             ? {
-                label: country.charAt(0).toUpperCase() + country.slice(1),
+                label: capitaliseWord(country),
                 value: country,
               }
             : null

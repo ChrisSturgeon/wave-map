@@ -13,6 +13,7 @@ import { DefaultUser } from 'next-auth';
 import DeleteLocation from '@/components/DeleteLocation/DeleteLocation';
 import AllLocationsNav from '@/components/AllLocationsNav/AllLocationsNav';
 import CountryFilter from '@/components/AllLocationsNav/CountryFilter';
+import SportFilter from '@/components/AllLocationsNav/SportFilter';
 
 // Helper imports
 import { capitaliseWord } from '@/server/resources/helpers';
@@ -47,6 +48,8 @@ export default function AllLocations({
   const router = useRouter();
   const currentPage = Number(router.query['page']);
   const country = router.query['country'] as string;
+  const sport = router.query['sport'] as string;
+  console.log(locations);
 
   return (
     <div style={{ minHeight: '100vh' }}>
@@ -58,6 +61,7 @@ export default function AllLocations({
         country={country}
       />
       <CountryFilter countryValues={countryValues} />
+      <SportFilter />
       <ul>
         {locations.map((location: LocationType) => {
           return (
@@ -73,32 +77,32 @@ export default function AllLocations({
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const pageSize = 10;
   const currentPage = Number(context.query.page);
   const country = context.query.country as string;
-  const pageSize = 5;
-  const countryValues = await generateDistinctCountriesValues();
+  const sport = context.query.sport as string;
+  const countryValues = await generateDistinctCountriesValues(sport);
 
-  // Query db for all locations with country parameter
-  if (country) {
-    const countryFormatted = capitaliseWord(country);
-    const locationsCount = await prisma.location.count({
-      where: {
-        country: countryFormatted,
-      },
-    });
-    const totalPagesCount = Math.ceil(locationsCount / pageSize);
+  try {
     const locations = await prisma.location.findMany({
       where: {
-        country: countryFormatted,
-      },
-      select: {
-        id: true,
-        name: true,
+        country: country ? country : undefined,
+        surfing: sport === 'surfing' ? true : undefined,
+        windsurfing: sport === 'windsurfing' ? true : undefined,
+        kitesurfing: sport === 'kitesurfing' ? true : undefined,
+        wingsurfing: sport === 'wingsurfing' ? true : undefined,
+        paddleboarding: sport === 'paddleboarding' ? true : undefined,
       },
       skip: (currentPage - 1) * 2,
       take: pageSize,
       orderBy: {
         name: 'asc',
+      },
+      select: {
+        id: true,
+        name: true,
+        latitude: true,
+        longitude: true,
       },
     });
 
@@ -111,6 +115,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       };
     }
 
+    const locationsCount = await prisma.location.count({
+      where: {
+        country: country ? country : undefined,
+        surfing: sport === 'surfing' ? true : undefined,
+        windsurfing: sport === 'windsurfing' ? true : undefined,
+        kitesurfing: sport === 'kitesurfing' ? true : undefined,
+        wingsurfing: sport === 'wingsurfing' ? true : undefined,
+        paddleboarding: sport === 'paddleboarding' ? true : undefined,
+      },
+    });
+    const totalPagesCount = Math.ceil(locationsCount / pageSize);
+
     return {
       props: {
         locations: JSON.parse(JSON.stringify(locations)),
@@ -119,39 +135,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         countryValues: countryValues,
       },
     };
-  }
-
-  // Query db with page only
-  const locations = await prisma.location.findMany({
-    skip: (currentPage - 1) * 2,
-    take: pageSize,
-    orderBy: {
-      name: 'asc',
-    },
-    select: {
-      id: true,
-      name: true,
-    },
-  });
-
-  if (!locations) {
+  } catch (err) {
+    console.log(err);
     return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
+      notFound: true,
     };
   }
-
-  const locationsCount = await prisma.location.count();
-  const totalPagesCount = Math.ceil(locationsCount / pageSize);
-
-  return {
-    props: {
-      locations: JSON.parse(JSON.stringify(locations)),
-      locationsCount: locationsCount,
-      totalPages: totalPagesCount,
-      countryValues: countryValues,
-    },
-  };
 };

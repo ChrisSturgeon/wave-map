@@ -7,6 +7,8 @@ import { z } from 'zod';
 // Validation Schema
 const locationSchema = z.object({
   name: z.string().min(3).max(20),
+  latitude: z.number(),
+  longitude: z.number(),
 });
 
 export default async function handler(
