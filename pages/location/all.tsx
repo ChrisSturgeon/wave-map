@@ -1,4 +1,7 @@
+import styles from '../../styles/all.module.css';
+
 // Next & React imports
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -20,6 +23,7 @@ import { capitaliseWord } from '@/server/resources/helpers';
 import generateDistinctCountriesValues from '@/server/react-select-helpers/generateDistinctCountriesValues';
 import AllMap from '@/components/AllLocationsNav/AllMap';
 import dynamic from 'next/dynamic';
+import { generateMapCenter } from '@/server/resources/countries';
 
 interface CountryValue {
   label: string;
@@ -50,6 +54,10 @@ export default function AllLocations({
   const currentPage = Number(router.query['page']);
   const country = router.query['country'] as string;
   const sport = router.query['sport'] as string;
+  const countryCoords = generateMapCenter(country);
+  console.log(countryCoords);
+
+  const [view, setView] = useState('map');
 
   const MapWithNoSSR = dynamic(
     () => import('@/components/AllLocationsNav/AllMap'),
@@ -58,8 +66,16 @@ export default function AllLocations({
     }
   );
 
+  function toggleView() {
+    if (view === 'map') {
+      setView('list');
+      return;
+    }
+    setView('map');
+  }
+
   return (
-    <div style={{ minHeight: '100vh' }}>
+    <div className={styles.wrapper}>
       <h1>All Locations</h1>
       <div>Found {locationsCount} locations</div>
       <AllLocationsNav
@@ -67,25 +83,25 @@ export default function AllLocations({
         totalPages={totalPages}
         country={country}
       />
-      <CountryFilter countryValues={countryValues} />
-      <SportFilter />
-      {/* <ul>
-        {locations.map((location: LocationType) => {
-          return (
-            <li key={location.name as React.Key}>
-              <Link href={`${location.id}`}>{location.name}</Link>
-              <DeleteLocation location={location.id} />
-            </li>
-          );
-        })}
-      </ul> */}
-      <MapWithNoSSR locations={locations} />
+      <div>
+        <CountryFilter countryValues={countryValues} />
+        <SportFilter />
+      </div>
+      <button onClick={toggleView}>Toggle View</button>
+      {view === 'map' && (
+        <MapWithNoSSR
+          locations={locations}
+          coords={countryCoords?.coodinates}
+          zoom={countryCoords?.zoom}
+        />
+      )}
+      {view === 'list' && <div>list view</div>}
     </div>
   );
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const pageSize = 10;
+  const pageSize = 1;
   const currentPage = Number(context.query.page);
   const country = context.query.country as string;
   const sport = context.query.sport as string;

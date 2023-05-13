@@ -15,6 +15,12 @@ export function generateCountryOptions(): countryType[] {
 
   return countryOptions;
 }
+
+export function generateMapCenter(countryName: string) {
+  const country = countries.find((country) => country.country === countryName);
+  return country;
+}
+
 const countries = [
   {
     country: 'Afghanistan',
@@ -587,6 +593,8 @@ const countries = [
   {
     country: 'Morocco',
     currency_code: 'MAD',
+    coodinates: [31.8504, -9.3067],
+    zoom: 5,
   },
   {
     country: 'Mozambique',
@@ -927,10 +935,14 @@ const countries = [
   {
     country: 'United Kingdom',
     currency_code: 'GBP',
+    coodinates: [53.3886, -1.6681],
+    zoom: 5,
   },
   {
     country: 'United States',
     currency_code: 'USD',
+    coodinates: [42.38585564728215, -103.17600821461481],
+    zoom: 4,
   },
   {
     country: 'United States Minor Outlying Islands',

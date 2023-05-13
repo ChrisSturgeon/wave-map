@@ -15,10 +15,8 @@ interface ShowLocationsProps {
   locations: LocationType[];
 }
 
-type BBox = number[];
-
-// TODO - fix bounds setstate type from any
-const icons = {};
+// TODO - fix bounds setstate from any type and icons any type
+const icons: any = {};
 const fetchIcon = (count: number, size: number) => {
   if (!icons[count]) {
     icons[count] = L.divIcon({
@@ -38,7 +36,6 @@ export default function ShowLocations({ locations }: ShowLocationsProps) {
 
   // get map bounds
   function updateMap() {
-    console.log('Updating bounds');
     const b = map.getBounds();
     setBounds([
       b.getSouthWest().lng,
@@ -83,8 +80,6 @@ export default function ShowLocations({ locations }: ShowLocationsProps) {
     zoom: zoom,
     options: { radius: 100, maxZoom: 17 },
   });
-
-  console.log(clusters.length);
 
   return (
     <>

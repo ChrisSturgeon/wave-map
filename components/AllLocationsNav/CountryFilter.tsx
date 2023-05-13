@@ -18,17 +18,24 @@ interface CountryFilterProps {
 export default function CountryFilter({ countryValues }: CountryFilterProps) {
   const router = useRouter();
   const country = router.query['country'] as string;
+  const sport = router.query['sport'] as string;
+  const currentPage = router.query['page'] as string;
 
   function handleChange(option: CountryType | null) {
     if (option) {
-      const prevPath = router.asPath;
-      const pathWithoutCountry = prevPath.replace(`&country=${country}`, '');
-      const newPath = pathWithoutCountry + `&country=${option.value}`;
-      router.push(newPath);
+      if (sport) {
+        router.push(
+          `all?page=${currentPage}&country=${option.value}&sport=${sport}`
+        );
+        return;
+      }
+      router.push(`all?page=${currentPage}&country=${option.value}`);
     } else {
-      const prevPath = router.asPath;
-      const newPath = prevPath.replace(`&country=${country}`, '');
-      router.push(newPath);
+      if (sport) {
+        router.push(`all?page=${currentPage}&sport=${sport}`);
+        return;
+      }
+      router.push(`all?page=${currentPage}`);
     }
   }
   return (

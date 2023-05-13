@@ -11,15 +11,16 @@ export interface LocationType {
 
 interface AllMapProps {
   locations: LocationType[];
+  coords: number[] | undefined;
+  zoom: number | undefined;
 }
 
-export default function AllMap({ locations }: AllMapProps) {
-  console.log(locations);
+export default function AllMap({ locations, coords, zoom }: AllMapProps) {
   return (
     <div>
       <MapContainer
-        center={[52.4255, 7.71955]}
-        zoom={4}
+        center={coords ? coords : [52.4255, 7.71955]}
+        zoom={zoom ? zoom : 2.5}
         scrollWheelZoom={false}
         style={{ height: '600px', width: '100%', borderRadius: '10px' }}
       >
@@ -27,23 +28,6 @@ export default function AllMap({ locations }: AllMapProps) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         />
-        {/* <Marker position={[51.505, -0.09]}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
-        </Marker>
-        {locations.map((location) => {
-          return (
-            <Marker
-              key={location.id}
-              position={[location.latitude, location.longitude]}
-            >
-              <Popup>
-                <Link href={`/location/${location.id}`}>{location.name}</Link>
-              </Popup>
-            </Marker>
-          );
-        })} */}
         <ShowLocations locations={locations} />
       </MapContainer>
     </div>

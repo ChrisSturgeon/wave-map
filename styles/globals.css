@@ -11,6 +11,18 @@ body {
   overflow-x: hidden;
 }
 
+body {
+  /* min-width: 100vw; */
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-grow: 1;
+}
+
+#__next {
+  flex: 1 1 auto;
+}
+
 a {
   color: inherit;
 }
@@ -20,4 +32,15 @@ background square from leaflet marker*/
 .leaflet-div-icon {
   background: none !important;
   border: none !important;
+}
+
+.leaflet-control {
+  z-index: 0 !important;
+}
+.leaflet-pane {
+  z-index: 0 !important;
+}
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 0 !important;
 }
