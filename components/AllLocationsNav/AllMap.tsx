@@ -19,7 +19,7 @@ export default function AllMap({ locations, coords, zoom }: AllMapProps) {
   return (
     <div>
       <MapContainer
-        center={coords ? coords : [52.4255, 7.71955]}
+        center={coords ? [coords![0], coords![1]] : [52.4255, 7.71955]}
         zoom={zoom ? zoom : 2.5}
         scrollWheelZoom={false}
         style={{ height: '600px', width: '100%', borderRadius: '10px' }}

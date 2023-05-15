@@ -5,7 +5,7 @@ type countryType = {
 
 // Generates list of valid 'react-select' options for all
 // geographic countries
-export function generateCountryOptions(): countryType[] {
+export function getCountryNameSelectOptions(): countryType[] {
   const countryOptions = countries.map((country) => {
     return {
       label: country.country,

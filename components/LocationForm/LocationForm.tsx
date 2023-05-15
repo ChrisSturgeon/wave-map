@@ -16,8 +16,8 @@ import { FormEvent } from 'react';
 
 export interface LocationFormData {
   name: string;
-  latitude: number;
-  longitude: number;
+  latitude: number | null;
+  longitude: number | null;
   country: CountryType | null;
   waveType: {
     label: string;
@@ -27,6 +27,7 @@ export interface LocationFormData {
   parking: string;
   toilets: string;
   cafe: string;
+  mapZoom: number;
 }
 
 interface LocationFormProps {
@@ -42,14 +43,15 @@ interface LocationFormProps {
 
 const INITIAL_DATA: LocationFormData = {
   name: '',
-  latitude: 51.4934,
-  longitude: 0.0,
+  latitude: null,
+  longitude: null,
   country: null,
   waveType: null,
   sports: null,
   parking: '',
   toilets: '',
   cafe: '',
+  mapZoom: 4,
 };
 
 export function LocationForm({ location }: LocationFormProps) {
@@ -101,6 +103,18 @@ export function LocationForm({ location }: LocationFormProps) {
     e.preventDefault();
 
     if (!isLastStep) {
+      console.log(currentStepIndex);
+      if (
+        currentStepIndex === 0 &&
+        data.latitude === null &&
+        data.longitude === null
+      ) {
+        // TODO - Put map validation here
+
+        console.log('This one');
+        return;
+      }
+
       next();
       return;
     }

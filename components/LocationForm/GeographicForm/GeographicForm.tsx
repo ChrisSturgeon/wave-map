@@ -1,6 +1,8 @@
+import dynamic from 'next/dynamic';
 import Select from 'react-select';
-import { generateCountryOptions } from '@/server/resources/countries';
+import { getCountryNameSelectOptions } from '@/server/resources/countries';
 import { useId } from 'react';
+import { useCallback } from 'react';
 
 export interface CountryType {
   label: string;
@@ -10,13 +12,21 @@ export interface CountryType {
 type GeographicData = {
   name: string;
   country: CountryType | null;
-  latitude: number;
-  longitude: number;
+  latitude: number | null;
+  longitude: number | null;
+  mapZoom: number;
 };
 
 type GeographicFormProps = GeographicData & {
   updateFields: (fields: Partial<GeographicData>) => void;
 };
+
+const MapWithNoSSR = dynamic(
+  () => import('@/components/LocationForm/GeographicForm/NewLocationMap'),
+  {
+    ssr: false,
+  }
+);
 
 export default function GeographicForm({
   name,
@@ -24,8 +34,11 @@ export default function GeographicForm({
   latitude,
   longitude,
   updateFields,
+  mapZoom,
 }: GeographicFormProps) {
-  const countriesOptions = generateCountryOptions();
+  const countriesOptions = getCountryNameSelectOptions();
+  // eslint-disable-next-line
+  const memoizedUpdateFields = useCallback(updateFields, []);
 
   function handleCountryChange(option: CountryType | null) {
     if (option) {
@@ -54,21 +67,11 @@ export default function GeographicForm({
         instanceId={useId()}
         required
       />
-      <label htmlFor="latitude">Latitude</label>
-      <input
-        required
-        type="number"
-        id="latitude"
-        value={latitude}
-        onChange={(e) => updateFields({ latitude: Number(e.target.value) })}
-      />
-      <label htmlFor="latitude">Longitude</label>
-      <input
-        required
-        type="number"
-        id="longitude"
-        value={longitude}
-        onChange={(e) => updateFields({ longitude: Number(e.target.value) })}
+      <MapWithNoSSR
+        latitude={latitude}
+        longitude={longitude}
+        updateFields={memoizedUpdateFields}
+        mapZoom={mapZoom}
       />
     </>
   );

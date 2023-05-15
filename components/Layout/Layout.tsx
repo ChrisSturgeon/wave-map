@@ -6,7 +6,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className={styles.layout}>
       <NavBar />
       <main style={{ flexGrow: 1 }}>{children}</main>
-      <footer style={{ backgroundColor: 'blue' }}>The footer</footer>
+      <footer style={{ backgroundColor: 'lightgrey' }}>The footer</footer>
     </div>
   );
 }

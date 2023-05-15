@@ -4,6 +4,7 @@ import styles from '../../styles/all.module.css';
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 
 // Auth imports
 import { prisma } from '@/server/db/client';
@@ -22,7 +23,6 @@ import SportFilter from '@/components/AllLocationsNav/SportFilter';
 import { capitaliseWord } from '@/server/resources/helpers';
 import generateDistinctCountriesValues from '@/server/react-select-helpers/generateDistinctCountriesValues';
 import AllMap from '@/components/AllLocationsNav/AllMap';
-import dynamic from 'next/dynamic';
 import { generateMapCenter } from '@/server/resources/countries';
 
 interface CountryValue {
@@ -55,7 +55,6 @@ export default function AllLocations({
   const country = router.query['country'] as string;
   const sport = router.query['sport'] as string;
   const countryCoords = generateMapCenter(country);
-  console.log(countryCoords);
 
   const [view, setView] = useState('map');
 
@@ -101,7 +100,7 @@ export default function AllLocations({
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const pageSize = 1;
+  const pageSize = 10;
   const currentPage = Number(context.query.page);
   const country = context.query.country as string;
   const sport = context.query.sport as string;
@@ -117,8 +116,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         wingsurfing: sport === 'wingsurfing' ? true : undefined,
         paddleboarding: sport === 'paddleboarding' ? true : undefined,
       },
-      skip: (currentPage - 1) * 2,
-      take: pageSize,
+      // skip: (currentPage - 1) * 2,
+      // take: pageSize,
       orderBy: {
         name: 'asc',
       },
