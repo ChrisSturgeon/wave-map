@@ -1,6 +1,7 @@
 import { prisma } from '@/server/db/client';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Link from 'next/link';
+import FavouriteLocation from '@/components/FavouriteLocation/FavouriteLocation';
 
 interface Location {
   id: number;
@@ -30,6 +31,7 @@ export default function LocationPage({ location }: LocationPageProps) {
     <div>
       <p>I am the page for {location.name}</p>
       <Link href={`${location.id}/edit`}>Edit</Link>
+      <FavouriteLocation />
     </div>
   );
 }

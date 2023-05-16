@@ -1,3 +1,4 @@
+import { latLng } from 'leaflet';
 import style from './NewLocationMap.module.css';
 import React from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
@@ -27,6 +28,7 @@ const NewLocationMap = ({
           longitude: e.latlng.lng,
           mapZoom: map.getZoom(),
         });
+        map.flyTo(e.latlng);
       },
     });
     return null;

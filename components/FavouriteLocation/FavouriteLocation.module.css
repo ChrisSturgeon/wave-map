@@ -1,0 +1,8 @@
+.favourite button svg {
+  height: 50px;
+}
+
+.favourite button svg.filled {
+  stroke: black;
+  fill: blue;
+}

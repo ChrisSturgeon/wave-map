@@ -1,4 +1,4 @@
-import styles from '../../styles/all.module.css';
+import styles from '@/styles/all.module.css';
 
 // Next & React imports
 import { useState } from 'react';
@@ -11,18 +11,14 @@ import { prisma } from '@/server/db/client';
 
 // Type imports
 import { GetServerSideProps } from 'next';
-import { DefaultUser } from 'next-auth';
 
 // Component imports
-import DeleteLocation from '@/components/DeleteLocation/DeleteLocation';
 import AllLocationsNav from '@/components/AllLocationsNav/AllLocationsNav';
 import CountryFilter from '@/components/AllLocationsNav/CountryFilter';
 import SportFilter from '@/components/AllLocationsNav/SportFilter';
 
 // Helper imports
-import { capitaliseWord } from '@/server/resources/helpers';
 import generateDistinctCountriesValues from '@/server/react-select-helpers/generateDistinctCountriesValues';
-import AllMap from '@/components/AllLocationsNav/AllMap';
 import { generateMapCenter } from '@/server/resources/countries';
 
 interface CountryValue {
