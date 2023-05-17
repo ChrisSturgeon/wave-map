@@ -32,6 +32,7 @@
     "react-leaflet": "^4.2.1",
     "react-select": "^5.7.2",
     "supercluster": "^8.0.1",
+    "swr": "^2.1.5",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4",
     "use-supercluster": "^0.4.0",
