@@ -51,7 +51,6 @@ export default function AllLocations({
   const country = router.query['country'] as string;
   const sport = router.query['sport'] as string;
   const countryCoords = generateMapCenter(country);
-
   const [view, setView] = useState('map');
 
   const MapWithNoSSR = dynamic(

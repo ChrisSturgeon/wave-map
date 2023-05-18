@@ -11,7 +11,7 @@ export default async function handler(
     const session = await getServerSession(req, res, authOptions);
     if (!session) {
       res.status(401).json({
-        error: 'You must login to edit this location',
+        error: 'You must login to favourite this location',
       });
       return;
     }
@@ -40,13 +40,13 @@ export default async function handler(
 
     if (hasFavourited) {
       res.status(200).json({
-        message: `User has favourited`,
+        favourite: true,
       });
       return;
     }
 
     res.status(404).json({
-      message: 'User has not favourited',
+      favourite: false,
     });
     return;
   }
@@ -88,8 +88,8 @@ export default async function handler(
       },
     });
 
-    res.status(201).json({
-      message: `Trying to favourite ${location}`,
+    res.status(200).json({
+      favourite: true,
     });
   }
 
@@ -129,7 +129,7 @@ export default async function handler(
     // }
 
     res.status(200).json({
-      message: 'User has un-favourited this location',
+      favourite: false,
     });
     return;
   }
