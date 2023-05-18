@@ -1,5 +1,5 @@
 import { useId } from 'react';
-import Select, { ActionMeta } from 'react-select';
+import Select from 'react-select';
 
 export type WaveType = {
   label: string;

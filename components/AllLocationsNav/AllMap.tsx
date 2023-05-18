@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer } from 'react-leaflet';
 import ShowLocations from './ShowLocations';
 
 export interface LocationType {

@@ -1,7 +1,6 @@
 import useSWR from 'swr';
 
 async function fetcher(url: string) {
-  // const url = `/api/location/${locationId}`;
   const response = await fetch(url);
   const data = response.json();
   return data;

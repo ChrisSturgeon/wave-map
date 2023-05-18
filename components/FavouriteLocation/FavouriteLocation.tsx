@@ -1,7 +1,6 @@
-import { useRouter } from 'next/router';
 import style from './FavouriteLocation.module.css';
+import { useRouter } from 'next/router';
 import useSWR from 'swr';
-import { useEffect } from 'react';
 
 async function fetcher(url: string) {
   const response = await fetch(url);

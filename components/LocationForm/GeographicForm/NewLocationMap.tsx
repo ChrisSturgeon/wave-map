@@ -1,4 +1,3 @@
-import { latLng } from 'leaflet';
 import style from './NewLocationMap.module.css';
 import React from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';

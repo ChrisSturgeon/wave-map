@@ -1,8 +1,7 @@
+import { useCallback, useId } from 'react';
 import dynamic from 'next/dynamic';
 import Select from 'react-select';
 import { getCountryNameSelectOptions } from '@/server/resources/countries';
-import { useId } from 'react';
-import { useCallback } from 'react';
 
 export interface CountryType {
   label: string;

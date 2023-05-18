@@ -1,5 +1,5 @@
-import NavBar from '../Navigation/NavBar';
 import styles from './Layout.module.css';
+import NavBar from '../Navigation/NavBar';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (

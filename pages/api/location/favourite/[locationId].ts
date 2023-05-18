@@ -121,13 +121,6 @@ export default async function handler(
       },
     });
 
-    // if (hasFavourited) {
-    //   res.status(200).json({
-    //     message: `User has un-favourited`,
-    //   });
-    //   return;
-    // }
-
     res.status(200).json({
       favourite: false,
     });

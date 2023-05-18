@@ -5,7 +5,6 @@ export default function DeleteLocation({ location }: { location: Number }) {
 
   async function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
-
     const url = `/api/location/${location}`;
 
     const response = await fetch(url, {

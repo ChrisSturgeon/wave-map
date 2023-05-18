@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import styles from './NavBar.module.css';
+import Link from 'next/link';
 import Login from '../Login.tsx/Login';
 
 export default function NavBar() {
